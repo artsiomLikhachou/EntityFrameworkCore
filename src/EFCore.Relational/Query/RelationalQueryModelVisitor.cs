@@ -55,6 +55,7 @@ namespace Microsoft.EntityFrameworkCore.Query
         private bool _requiresClientProjection;
         private bool _requiresClientOrderBy;
         private bool _requiresClientResultOperator;
+        private bool _requiresStreamingGroupResultOperator;
 
         private readonly List<GroupJoinClause> _unflattenedGroupJoinClauses = new List<GroupJoinClause>();
 
@@ -169,6 +170,20 @@ namespace Microsoft.EntityFrameworkCore.Query
         }
 
         /// <summary>
+        ///     Gets or sets a value indicating whether the query requires client result operator.
+        /// </summary>
+        /// <value>
+        ///     true if the query requires client result operator, false if not.
+        /// </value>
+        public virtual bool RequiresStreamingGroupResultOperator
+        {
+            get => _requiresStreamingGroupResultOperator || RequiresClientEval;
+            set => _requiresStreamingGroupResultOperator = value;
+        }
+
+
+
+        /// <summary>
         ///     Gets or sets a value indicating whether this query model visitor will be
         ///     able to bind directly to properties from its parent query without requiring
         ///     parameter injection.
@@ -190,7 +205,8 @@ namespace Microsoft.EntityFrameworkCore.Query
                && !RequiresClientFilter
                && !RequiresClientProjection
                && !RequiresClientOrderBy
-               && !RequiresClientResultOperator;
+               && !RequiresClientResultOperator
+               && !RequiresStreamingGroupResultOperator;
 
         /// <summary>
         ///     Context for the query compilation.
